@@ -38,3 +38,31 @@ Output will be the score of the alignment along with the pairwise aligned sequen
 HEAGAWGHE-
 ---PAW-HEA
 ```
+
+## <i> Bloked Based Star Alignment </i>
+First we perform <b>Star Alignment</b> by finding the pariwise alignment scores for each pair of protein sequences and form the distance matrix. Then we pick the center sequence based on the minimum total of distances for each sequence. Then sequences will be added to get aligned in dicreasing order of similarity (increase of distance) in respect to the center sequence.
+<br>
+Now to have better alignment for more divergent sequences we improve on the multiple sueqence alignemnt that we have achived by performing <b>Block Based</b> alignment. This is how we do this:
+<br>
+we find blocks with minimum two columns within the alignment containing gaps or mismatches, then aplly the `star_alignment` for these blocks alone. If realignment of any block improves the overall score of total alignments we switch to the realigned block.
+## Quick Start
+Input number of protein sequences to be aligned and then each sequence in seperate line with capital letters.
+
+```bash
+5
+TAGCTACCAGGA
+CAGCTACCAGG
+TAGCTACCAGT
+CAGCTATCGCGGC
+CAGCTACCAGGA
+```
+Output will be the overall score of the multiple sequence alignment and aligned sequences in each line respectively to the input sequence.
+
+```bash
+240
+TAGCTA-C-CAGGA
+CAGCTA-C-CAGG-
+TAGCTA-C-CA-GT
+CAGCTATCGC-GGC
+CAGCTA-C-CAGGA
+```
