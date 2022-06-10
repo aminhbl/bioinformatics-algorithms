@@ -44,9 +44,9 @@ First we perform <b>Star Alignment</b> by finding the pariwise alignment scores 
 <br>
 Now to have better alignment for more divergent sequences we improve on the multiple sueqence alignemnt that we have achived by performing <b>Block Based</b> alignment. This is how we do this:
 <br>
-we find blocks with minimum two columns within the alignment containing gaps or mismatches, then aplly the `star_alignment` for these blocks alone. If realignment of any block improves the overall score of total alignments we switch to the realigned block.
+we find blocks with minimum two columns within the alignment containing gaps or mismatches, then apply the `star_alignment` for these blocks alone. If realignment of any block improves the overall score of total alignments we switch to the realigned block.
 ## Quick Start
-Input number of protein sequences to be aligned and then each sequence in seperate line with capital letters.
+Input number of protein sequences to be aligned and then each sequence in separate line with capital letters.
 
 ```bash
 5
@@ -65,4 +65,24 @@ CAGCTA-C-CAGG-
 TAGCTA-C-CA-GT
 CAGCTATCGC-GGC
 CAGCTA-C-CAGGA
+```
+
+## <i> Profile Based Alignment </i>
+Here we construct a statistical model by first building a profile using the given multiple sequenses, calculating the probability of appearance for each residue at it's respective position. In this process we use pseudocount of `2` to avoid the zero probability. After that we will localy align a given long sequence to previous multiple sequences using the profile for scoring the alignment and then report the subsequence with the highest score of alignment.
+
+## Quick Start
+Input number of multiple sequences to build a profile from. After that each sequence should be in separate lines followed by the long sequence.
+
+```bash
+4
+HVLIP
+H-MIP
+HVL-P
+LVLIP
+LIVPHHVPIPVLVIHPVLPPHIVLHHIHVHIHLPVLHIVHHLVIHLHPIVL
+```
+output will show the aligned subsequence with highest score.
+
+```bash
+H-L-P
 ```
