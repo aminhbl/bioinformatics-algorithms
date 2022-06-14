@@ -100,6 +100,71 @@ def alignment_score(MSA):
     return score
 
 
+def blocked_star(sequences):
+    main_block = star_alignment(sequences)
+    new_main_block = main_block
+
+    curr_score = alignment_score(main_block)
+    prev_score = -1 * math.inf
+
+    while curr_score > prev_score:
+
+        valid_columns = [False for _ in range(len(main_block[0]))]
+
+        for i in range(len(main_block[0])):
+            for j in range(len(main_block)):
+                if j + 1 < len(main_block):
+
+                    if main_block[j][i] == '-':
+                        valid_columns[i] = True
+                        break
+
+                    if main_block[j][i] != main_block[j + 1][i]:
+                        valid_columns[i] = True
+                        break
+
+        begin = None
+        end = None
+        block_points = {}
+        for i in range(len(valid_columns)):
+            if valid_columns[i]:
+                if begin is None:
+                    begin = i
+                else:
+                    end = i
+            if not valid_columns[i]:
+                if end is not None:
+                    block_points[begin] = end
+                begin = None
+                end = None
+        if end is not None:
+            block_points[begin] = end
+
+        for start, finish in block_points.items():
+            finish += 1
+
+            block = {}
+            for i in range(len(main_block)):
+                block[i] = main_block[i][start:finish].replace('-', '')
+
+            block = star_alignment(block)
+
+            new_main_block = {}
+            for j in range(len(main_block)):
+                new_main_block[j] = main_block[j][:start] + block[j] + main_block[j][finish:]
+
+            prev_score = curr_score
+            curr_score = alignment_score(new_main_block)
+
+            if curr_score > prev_score:
+                main_block = new_main_block
+
+    print(curr_score)
+    main_block = sorted(main_block.items())
+    for seq in main_block:
+        print(seq[1])
+
+        
 def star_alignment(sequences):
     similarities = {}
     n = len(sequences)
@@ -150,72 +215,6 @@ def star_alignment(sequences):
 
     aligned[center_index] = center
     return aligned
-
-
-def blocked_star(sequences):
-    main_block = star_alignment(sequences)
-    new_main_block = main_block
-
-    curr_score = alignment_score(main_block)
-    prev_score = -1 * math.inf
-
-    while curr_score > prev_score:
-
-        valid_columns = [False for _ in range(len(main_block[0]))]
-
-        for i in range(len(main_block[0])):
-            for j in range(len(main_block)):
-                if j + 1 < len(main_block):
-
-                    if main_block[j][i] == '-':
-                        valid_columns[i] = True
-                        break
-
-                    if main_block[j][i] != main_block[j + 1][i]:
-                        valid_columns[i] = True
-                        break
-
-        begin = None
-        end = None
-        block_points = []
-        for i in range(len(valid_columns)):
-            if valid_columns[i]:
-                if begin is None:
-                    begin = i
-                else:
-                    end = i
-            if not valid_columns[i]:
-                if end is not None:
-                    block_points.append((begin, end))
-                begin = None
-                end = None
-        if end is not None:
-            block_points.append((begin, end))
-
-        for step in range(len(block_points)):
-            start = block_points[step][0]
-            finish = block_points[step][1] + 1
-
-            block = {}
-            for i in range(len(main_block)):
-                block[i] = main_block[i][start:finish].replace('-', '')
-
-            block = star_alignment(block)
-
-            new_main_block = {}
-            for j in range(len(main_block)):
-                new_main_block[j] = main_block[j][:start] + block[j] + main_block[j][finish:]
-
-            prev_score = curr_score
-            curr_score = alignment_score(new_main_block)
-
-            if curr_score > prev_score:
-                main_block = new_main_block
-
-    print(curr_score)
-    main_block = sorted(main_block.items())
-    for seq in main_block:
-        print(seq[1])
 
 
 def main():
